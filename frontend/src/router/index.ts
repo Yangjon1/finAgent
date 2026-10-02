@@ -4,6 +4,7 @@ import LoginView from '../views/LoginView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import ExpensesView from '../views/ExpensesView.vue'
 import KnowledgeView from '../views/KnowledgeView.vue'
+import ContractsView from '../views/ContractsView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -12,6 +13,7 @@ const router = createRouter({
     { path: '/', component: DashboardView, meta: { permission: 'rbac:user:read' } },
     { path: '/expenses', component: ExpensesView, meta: { permission: 'expense:read' } },
     { path: '/knowledge', component: KnowledgeView, meta: { permission: 'knowledge:document:index' } },
+    { path: '/contracts', component: ContractsView, meta: { permission: 'contract:read' } },
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
 })

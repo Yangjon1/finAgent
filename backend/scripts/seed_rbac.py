@@ -39,6 +39,10 @@ PERMISSIONS = [
     ("报销 Agent 恢复", "agent:expense:resume", "agent", "resume"),
     ("知识库创建", "knowledge:base:create", "knowledge", "base"),
     ("知识文档索引", "knowledge:document:index", "knowledge", "index"),
+    ("合同创建", "contract:create", "contract", "create"),
+    ("合同查看", "contract:read", "contract", "read"),
+    ("合同分析", "contract:analyze", "contract", "analyze"),
+    ("合同恢复", "contract:resume", "contract", "resume"),
 ]
 
 

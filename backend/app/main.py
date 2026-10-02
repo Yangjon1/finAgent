@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 
-from app.api import agent_runs, auth, expenses, files, health, identity, knowledge, rbac, rules
+from app.api import agent_runs, auth, contracts, expenses, files, health, identity, knowledge, rbac, rules
 from app.core.config import get_settings
 from app.core.request_id import request_id_middleware
 from app.core.errors import validation_exception_handler, unhandled_exception_handler
@@ -30,3 +30,4 @@ app.include_router(rules.router, prefix=settings.api_prefix)
 app.include_router(rules.rules_router, prefix=settings.api_prefix)
 app.include_router(agent_runs.router, prefix=settings.api_prefix)
 app.include_router(knowledge.router, prefix=settings.api_prefix)
+app.include_router(contracts.router, prefix=settings.api_prefix)

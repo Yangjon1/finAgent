@@ -1429,6 +1429,13 @@ Phase 6 已完成企业知识库基础链路：
 - 租户隔离检索和知识库搜索 API
 - ExpenseGraph 的 `retrieve_policy` 节点接入 Qdrant Retriever
 
+Phase 7 已完成 ContractGraph 基础审核链路：
+
+- 合同、版本、条款、风险和复核记录模型
+- 合同文本解析、必备条款识别、制度检索和确定性风险规则
+- 风险分级与业务负责人、法务、财务、管理层审批路由
+- Human-in-the-loop 复核、合同归档和 Contract Agent Run
+
 Phase 1 后续部署命令：
 
 ```text
