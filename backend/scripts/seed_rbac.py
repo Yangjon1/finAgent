@@ -10,6 +10,7 @@ from sqlalchemy import select
 from app.core.security import hash_password
 from app.db import SessionLocal
 from app.models.rules import Budget, ExpenseCategory
+from app.models.knowledge import KnowledgeBase
 from app.models.identity import Department, Permission, Role, Tenant, User
 
 
@@ -36,6 +37,8 @@ PERMISSIONS = [
     ("报销 Agent 运行", "agent:expense:run", "agent", "run"),
     ("报销 Agent 查看", "agent:expense:read", "agent", "read"),
     ("报销 Agent 恢复", "agent:expense:resume", "agent", "resume"),
+    ("知识库创建", "knowledge:base:create", "knowledge", "base"),
+    ("知识文档索引", "knowledge:document:index", "knowledge", "index"),
 ]
 
 
@@ -67,6 +70,8 @@ def main() -> None:
         db.flush()
         if not db.scalar(select(Budget).where(Budget.tenant_id == tenant.id, Budget.fiscal_year == datetime.now().year, Budget.department_id == department.id)):
             db.add(Budget(tenant_id=tenant.id, fiscal_year=datetime.now().year, department_id=department.id, category_code=None, allocated_amount="100000", used_amount="0", frozen_amount="0", version=1))
+        for code, name in [("expense_policy", "报销管理制度"), ("travel_policy", "差旅管理制度"), ("expense_standard", "费用标准"), ("invoice_policy", "发票管理制度"), ("contract_policy", "合同管理制度"), ("procurement_policy", "采购管理制度"), ("approval_policy", "审批制度")]:
+            get_or_create(db, KnowledgeBase, tenant_id=tenant.id, code=code, name=name, description=f"{name}知识库", status="ACTIVE")
         permission_items = []
         for name, code, resource, action in PERMISSIONS:
             permission_items.append(get_or_create(db, Permission, name=name, code=code, resource=resource, action=action, description=""))

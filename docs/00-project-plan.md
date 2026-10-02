@@ -1422,6 +1422,13 @@ Phase 5 已完成 ExpenseGraph 基础编排：
 - LangGraph interrupt/resume 人工复核
 - Agent Run 状态、Graph 版本、节点结果和错误持久化
 
+Phase 6 已完成企业知识库基础链路：
+
+- 报销、差旅、费用标准、发票、合同、采购、审批知识库初始化
+- 文本文档上传、文本切分、Embedding 和 Qdrant 向量入库
+- 租户隔离检索和知识库搜索 API
+- ExpenseGraph 的 `retrieve_policy` 节点接入 Qdrant Retriever
+
 Phase 1 后续部署命令：
 
 ```text

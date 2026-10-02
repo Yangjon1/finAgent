@@ -7,6 +7,7 @@ from app.models import identity  # noqa: F401
 from app.models import expense  # noqa: F401
 from app.models import rules  # noqa: F401
 from app.models import agent  # noqa: F401
+from app.models import knowledge  # noqa: F401
 
 config = context.config
 config.set_main_option("sqlalchemy.url", get_settings().database_url.replace("%", "%%"))

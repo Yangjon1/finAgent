@@ -13,6 +13,7 @@ from app.models.identity import User
 from app.models.rules import ExpenseCategory, Invoice
 from app.schemas.rules import ApprovalRouteRequest, ExpenseRuleRequest, InvoiceValidationRequest
 from app.services.rules import evaluate_expense, evaluate_invoice, resolve_approval_route
+from app.services.knowledge import search_knowledge
 
 
 class ExpenseState(TypedDict, total=False):
@@ -140,9 +141,12 @@ class ExpenseGraph:
         db = self.session_factory()
         try:
             category = db.scalar(select(ExpenseCategory).where(ExpenseCategory.tenant_id == state["tenant_id"], (ExpenseCategory.code == state["claim"]["category"]) | (ExpenseCategory.name == state["claim"]["category"])))
-            if not category:
-                return {"policy_hits": [], "errors": state.get("errors", []) + [{"node": "retrieve_policy", "message": "未找到费用类别制度配置"}]}
-            return {"policy_hits": [{"category": category.code, "single_limit": str(category.single_limit), "monthly_limit": str(category.monthly_limit), "requires_finance": category.requires_finance}]}
+            policy_hits = search_knowledge(state["tenant_id"], f"{state['claim']['category']} 报销费用标准 差旅管理制度", top_k=3)
+            if not category and not policy_hits:
+                return {"policy_hits": [], "errors": state.get("errors", []) + [{"node": "retrieve_policy", "message": "未找到费用类别制度配置或知识库依据"}]}
+            if category:
+                policy_hits.insert(0, {"source": "expense_category", "category": category.code, "single_limit": str(category.single_limit), "monthly_limit": str(category.monthly_limit), "requires_finance": category.requires_finance})
+            return {"policy_hits": policy_hits}
         finally:
             db.close()
 
