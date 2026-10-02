@@ -33,6 +33,9 @@ PERMISSIONS = [
     ("发票规则校验", "rule:invoice:validate", "rule", "invoice"),
     ("报销规则评估", "rule:expense:evaluate", "rule", "expense"),
     ("审批路由计算", "rule:approval:route", "rule", "approval"),
+    ("报销 Agent 运行", "agent:expense:run", "agent", "run"),
+    ("报销 Agent 查看", "agent:expense:read", "agent", "read"),
+    ("报销 Agent 恢复", "agent:expense:resume", "agent", "resume"),
 ]
 
 

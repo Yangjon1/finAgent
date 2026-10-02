@@ -1414,6 +1414,14 @@ Phase 4 已完成确定性财税规则引擎基础：
 - 审批人不能审批本人、金额分级审批路由和特殊费用财务节点
 - 发票检查、报销规则检查、预算和费用类别配置持久化
 
+Phase 5 已完成 ExpenseGraph 基础编排：
+
+- load_claim、parse_documents、extract_invoice、verify_invoice
+- check_duplicate、retrieve_policy、check_budget、risk_analysis
+- approval_router、auto_process、human_review、payment、audit
+- LangGraph interrupt/resume 人工复核
+- Agent Run 状态、Graph 版本、节点结果和错误持久化
+
 Phase 1 后续部署命令：
 
 ```text
