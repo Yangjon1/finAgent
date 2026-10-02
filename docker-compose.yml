@@ -42,7 +42,7 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     working_dir: /app/backend
-    command: ["python", "-c", "print('FinAgent worker foundation: waiting for async task implementation')"]
+    command: ["python", "-m", "app.workers.ocr_worker"]
     env_file: [.env.example]
     depends_on: {backend: {condition: service_started}}
   frontend:

@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     s3_secret_key: str = "change-me"
     s3_bucket: str = "finagent"
     s3_secure: bool = False
+    s3_public_endpoint: str = "http://localhost:8333"
     qdrant_url: str = "http://localhost:6333"
     llm_provider: str = "ollama"
     ocr_provider: str = "paddleocr"

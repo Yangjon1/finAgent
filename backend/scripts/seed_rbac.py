@@ -25,6 +25,9 @@ PERMISSIONS = [
     ("报销修改", "expense:update", "expense", "update"),
     ("报销提交", "expense:submit", "expense", "submit"),
     ("报销删除", "expense:delete", "expense", "delete"),
+    ("文件预签名", "file:presign", "file", "presign"),
+    ("文件确认", "file:complete", "file", "complete"),
+    ("文件查看", "file:read", "file", "read"),
 ]
 
 

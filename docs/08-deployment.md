@@ -15,12 +15,15 @@ S3_ENDPOINT=storage:8333
 S3_ACCESS_KEY=change-me
 S3_SECRET_KEY=change-me
 S3_BUCKET=finagent
+S3_PUBLIC_ENDPOINT=http://localhost:8333
 QDRANT_URL=http://qdrant:6333
 LLM_PROVIDER=ollama
 DEEPSEEK_API_KEY=
 QWEN_API_KEY=
 OLLAMA_BASE_URL=http://ollama:11434
 OCR_PROVIDER=paddleocr
+# PaddleOCR is installed separately when OCR execution is enabled:
+# pip install -e ".[ocr]"
 ```
 
 密钥只放本地 `.env` 或正式环境密钥管理，不提交真实密钥。启动顺序由健康检查控制；数据库先迁移，再启动业务 worker。

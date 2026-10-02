@@ -1398,6 +1398,14 @@ Phase 1 已完成基础 RBAC 闭环：
 - Vue 登录页、路由鉴权和 `v-permission` 按钮权限指令
 - 后端认证与权限测试
 
+Phase 3 已完成文件上传与 OCR 基础链路：
+
+- SeaweedFS S3 预签名上传、上传确认和下载地址
+- 文件 MIME、大小、对象路径和租户校验
+- Redis OCR 队列与 worker
+- PaddleOCR Provider 接口及 PDF 文本解析 fallback
+- 文件 OCR 状态、结果、错误和任务记录持久化
+
 Phase 1 后续部署命令：
 
 ```text
