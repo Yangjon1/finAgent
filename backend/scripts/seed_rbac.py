@@ -1,5 +1,6 @@
 import os
 import sys
+from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -8,6 +9,7 @@ from sqlalchemy import select
 
 from app.core.security import hash_password
 from app.db import SessionLocal
+from app.models.rules import Budget, ExpenseCategory
 from app.models.identity import Department, Permission, Role, Tenant, User
 
 
@@ -28,6 +30,9 @@ PERMISSIONS = [
     ("文件预签名", "file:presign", "file", "presign"),
     ("文件确认", "file:complete", "file", "complete"),
     ("文件查看", "file:read", "file", "read"),
+    ("发票规则校验", "rule:invoice:validate", "rule", "invoice"),
+    ("报销规则评估", "rule:expense:evaluate", "rule", "expense"),
+    ("审批路由计算", "rule:approval:route", "rule", "approval"),
 ]
 
 
@@ -48,6 +53,17 @@ def main() -> None:
     try:
         tenant = get_or_create(db, Tenant, id="demo-tenant", name="演示租户", status="ACTIVE")
         department = get_or_create(db, Department, id="demo-dept", tenant_id=tenant.id, name="总部", parent_id=None)
+        for code, name, single_limit, monthly_limit, requires_finance in [
+            ("差旅费", "差旅费", "400", "5000", False),
+            ("办公费", "办公费", "1000", "5000", False),
+            ("招待费", "招待费", "300", "3000", True),
+        ]:
+            category = db.scalar(select(ExpenseCategory).where(ExpenseCategory.tenant_id == tenant.id, ExpenseCategory.code == code))
+            if not category:
+                db.add(ExpenseCategory(tenant_id=tenant.id, code=code, name=name, single_limit=single_limit, monthly_limit=monthly_limit, requires_finance=requires_finance))
+        db.flush()
+        if not db.scalar(select(Budget).where(Budget.tenant_id == tenant.id, Budget.fiscal_year == datetime.now().year, Budget.department_id == department.id)):
+            db.add(Budget(tenant_id=tenant.id, fiscal_year=datetime.now().year, department_id=department.id, category_code=None, allocated_amount="100000", used_amount="0", frozen_amount="0", version=1))
         permission_items = []
         for name, code, resource, action in PERMISSIONS:
             permission_items.append(get_or_create(db, Permission, name=name, code=code, resource=resource, action=action, description=""))
