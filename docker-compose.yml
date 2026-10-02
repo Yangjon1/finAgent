@@ -1,0 +1,57 @@
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: finagent
+      MYSQL_USER: finagent
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root-password
+    ports: ["3307:3306"]
+    volumes: ["mysql_data:/var/lib/mysql"]
+    healthcheck: {test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot-password"], interval: 5s, timeout: 5s, retries: 20}
+  redis:
+    image: redis:7.4-alpine
+    ports: ["6379:6379"]
+    volumes: ["redis_data:/data"]
+    healthcheck: {test: ["CMD", "redis-cli", "ping"], interval: 5s, timeout: 3s, retries: 20}
+  storage:
+    image: chrislusf/seaweedfs:latest
+    command: ["mini", "-dir=/data", "-s3", "-s3.port=8333"]
+    environment:
+      AWS_ACCESS_KEY_ID: finagent
+      AWS_SECRET_ACCESS_KEY: change-me
+      S3_BUCKET: finagent
+    ports: ["8333:8333"]
+    volumes: ["storage_data:/data"]
+    healthcheck: {test: ["CMD-SHELL", "wget --spider -q http://localhost:9333/cluster/status || exit 1"], interval: 5s, timeout: 5s, retries: 20}
+  qdrant:
+    image: qdrant/qdrant:v1.12.5
+    ports: ["6333:6333", "6334:6334"]
+    volumes: ["qdrant_data:/qdrant/storage"]
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    working_dir: /app/backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    env_file: [.env.example]
+    ports: ["8000:8000"]
+    depends_on: {mysql: {condition: service_healthy}, redis: {condition: service_healthy}, storage: {condition: service_healthy}, qdrant: {condition: service_started}}
+  worker:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    working_dir: /app/backend
+    command: ["python", "-c", "print('FinAgent worker foundation: waiting for async task implementation')"]
+    env_file: [.env.example]
+    depends_on: {backend: {condition: service_started}}
+  frontend:
+    build: ./frontend
+    ports: ["5173:5173"]
+    depends_on: {backend: {condition: service_started}}
+
+volumes:
+  mysql_data:
+  redis_data:
+  storage_data:
+  qdrant_data:
